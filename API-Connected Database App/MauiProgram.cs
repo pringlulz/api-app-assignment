@@ -1,4 +1,5 @@
-﻿using API_Connected_Database_App.Services;
+﻿using API_Connected_Database_App.Repositories;
+using API_Connected_Database_App.Services;
 using Microsoft.Extensions.Logging;
 
 namespace API_Connected_Database_App
@@ -17,6 +18,7 @@ namespace API_Connected_Database_App
 
             builder.Services.AddMauiBlazorWebView();
             builder.Services.AddSingleton<APIService>();
+            builder.Services.AddSingleton<Repository>();
             
 
 #if DEBUG

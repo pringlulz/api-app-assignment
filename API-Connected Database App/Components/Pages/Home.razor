@@ -1,8 +1,51 @@
 ﻿@page "/"
 @using API_Connected_Database_App.Services
+@using Models
 
 @inject APIService api
+@inject Repositories.Repository repository;
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+Push the button to receive bacon.
+
+<button class="btn btn-primary" @onclick="GetBacon">Fetch and Save Data</button>
+
+<ul>
+@foreach (var post in postList)
+{
+        <li>
+            <div><label>ID:</label>  @post.id</div>
+            <div><label>Created at:</label>  @post.created_at</div>
+            <div><label>Updated at:</label>  @post.updated_at</div>
+        </li>
+}
+</ul>
+
+@code
+{
+    public List<Post> postList = new List<Post>();
+
+
+    public async void GetBacon()
+    {
+        System.Diagnostics.Debug.WriteLine("Something something doing bacon thing");
+        String tagString = new TagStringBuilder().addTagList(new List<String> { "bacon", "funny" })
+                                            .Build();
+        Dictionary<String, string> queryParameters = new Dictionary<string, string>();
+        queryParameters.Add("tags", tagString);
+
+        System.Diagnostics.Debug.WriteLine("about to execute query");
+        List<Post> result = await APIService.GetAsync(queryParameters);
+        System.Diagnostics.Debug.WriteLine("about to save to database");
+        await repository.SavePostsAsync(result);
+
+        //ok now load from the db
+        System.Diagnostics.Debug.WriteLine("about to load from database");
+        postList = await repository.GetPostsAsync();
+        System.Diagnostics.Debug.WriteLine($"NUmber of posts loaded: {postList.Count}");
+
+        StateHasChanged();
+    }
+
+}

@@ -1,5 +1,4 @@
 ﻿using API_Connected_Database_App.Models;
-using Java.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,19 +39,20 @@ namespace API_Connected_Database_App.Services
             //System.Diagnostics.Debug.WriteLine($"apiKey: {apiKey}");
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(apiKey)));
             client.DefaultRequestHeaders.Add("User-Agent", $"ClassProject/0.1 (by {apiKey.Split(":")[0]})");
+            lastRequest = DateTime.Now;
 
-            test();
         }
 
         private void test()
         {
-            List<String> includes = new List<String> { "dragon" };
-
-            var tagString = buildTagString(includes);
-
+      
+            String tagString = new TagStringBuilder().addScoreFilter(Compare.Greater_Than_Or_Equal, 100)
+                                .addTagList(new List<String>{ "chikn_nuggit"})
+                                .Build();
+           
             Dictionary<String, string> queryParameters = new Dictionary<string, string>();
             queryParameters.Add("tags", tagString);
-            //queryParameters.Add("score", ">200");
+            
             GetAsync(queryParameters);
 
         }
@@ -70,7 +70,7 @@ namespace API_Connected_Database_App.Services
             
         }
 
-        static async Task<List<Post>> GetAsync(Dictionary<String,string> queryParameters)
+        public static async Task<List<Post>> GetAsync(Dictionary<String,string> queryParameters)
         {
             HttpRequestMessage message = new HttpRequestMessage();
             //snafu: different keys should be url-encoded, 
@@ -79,20 +79,11 @@ namespace API_Connected_Database_App.Services
             System.Diagnostics.Debug.WriteLine($"result: {urlEncoded}");
             using (HttpResponseMessage response = await DoRequestAsync(String.Join("&", "posts.json?limit=10", urlEncoded)))
             {
-                return ProcessPostResponse(response);
+                return await ProcessPostResponse(response);
             }
             
         }
-
-        static String buildTagString(List<String> includes, List<String>? excludes = null) //optional exclude list
-        {
-            excludes = excludes ?? new List<String>();
-            includes.ForEach(i => i = HttpUtility.UrlEncode(i));
-            excludes.ForEach(i => i = HttpUtility.UrlEncode(i));
-            return String.Join("+", includes) + String.Join("+-", excludes);
-        }
-
-        static async List<Post> ProcessPostResponse(HttpResponseMessage response)
+        static async Task<List<Post>> ProcessPostResponse(HttpResponseMessage response)
         {
             //returns post array of format {posts: [{},{}...]}
             System.Diagnostics.Debug.WriteLine(await response.Content.ReadAsStringAsync());

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace API_Connected_Database_App.Models
 {
-    internal class Score
+    public class Score
     {
-        private int up { get; set; }
-        private int down { get; set; }
-        private int total { get; set; }
+        public int up { get; set; }
+        public int down { get; set; }
+        public int total { get; set; }
     }
 }
