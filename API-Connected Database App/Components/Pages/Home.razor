@@ -29,7 +29,7 @@ Push the button to receive bacon.
 
     public async void GetBacon()
     {
-        System.Diagnostics.Debug.WriteLine("Something something doing bacon thing");
+        System.Diagnostics.Debug.WriteLine("Building tag string");
         String tagString = new TagStringBuilder().addTagList(new List<String> { "bacon", "funny" })
                                             .Build();
         Dictionary<String, string> queryParameters = new Dictionary<string, string>();
@@ -43,7 +43,7 @@ Push the button to receive bacon.
         //ok now load from the db
         System.Diagnostics.Debug.WriteLine("about to load from database");
         postList = await repository.GetPostsAsync();
-        System.Diagnostics.Debug.WriteLine($"NUmber of posts loaded: {postList.Count}");
+        System.Diagnostics.Debug.WriteLine($"Number of posts loaded: {postList.Count}");
 
         StateHasChanged();
     }

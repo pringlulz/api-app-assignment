@@ -14,7 +14,6 @@ namespace API_Connected_Database_App.Services
     //no more than one request per second
     //endpoints:
     // posts.json
-    //TODO: rate limiter
     {
         private Uri base_address = new Uri("https://e926.net");
         private static HttpClient client;
@@ -40,20 +39,6 @@ namespace API_Connected_Database_App.Services
             client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(apiKey)));
             client.DefaultRequestHeaders.Add("User-Agent", $"ClassProject/0.1 (by {apiKey.Split(":")[0]})");
             lastRequest = DateTime.Now;
-
-        }
-
-        private void test()
-        {
-      
-            String tagString = new TagStringBuilder().addScoreFilter(Compare.Greater_Than_Or_Equal, 100)
-                                .addTagList(new List<String>{ "chikn_nuggit"})
-                                .Build();
-           
-            Dictionary<String, string> queryParameters = new Dictionary<string, string>();
-            queryParameters.Add("tags", tagString);
-            
-            GetAsync(queryParameters);
 
         }
 

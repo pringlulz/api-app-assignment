@@ -13,6 +13,9 @@ namespace API_Connected_Database_App.Models
         public int id { get; set; }
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
+        public int fav_count { get; set; }
+        public bool is_favorited { get; set; }
+        public bool has_notes { get; set; }
 
         //PROBLEM: SQLite doesn't like storing complex objects like a Dictionary.
 
